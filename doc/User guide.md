@@ -1,83 +1,82 @@
-# User Guide — Recovery Model
+# User guide – Recovery Model
 
-**Author:** Harmjan de Vries  
-**Date:** 21 November 2024
+*author: Harmjan de Vries*
+
+*Date: 21-11-2024*
 
 ## Introduction
 
-This document contains instructions for using the recovery model and documents the model's input-data format.
+This document contains instructions for how to use the recovery model and documents the input data format used by the model.
 
-The recovery model computes material flows for a system with multiple resource layers. For example, elements are contained in materials, materials are contained in components, and components are contained in products. The model computes flows at each of these levels. For detailed information about how the recovery model works, consult the code documentation in `doc/Recovery_model_documentation.pdf`.
+The recovery model is designed to compute material flows for a system with multiple layers of resources – e.g. elements are contained in materials, materials are contained in components, components are contained in products. The model computes the flows for each of these different levels. For detailed information on how the recovery model works, consult the code documentation in /doc/Recovery_model_documentation.pdf.
 
-The model requires three CSV input files containing compositions, transfer coefficients, and inflows. Store all three files in the same input directory.
+To use the recovery model to compute flows, three different CSV files must be provided: compositions, transfer coefficients and inflows. These must all be served in CSV format within the same folder. Running the model is very simple:
 
-To run the model:
+1. Create a folder for your data, and create a sub-folder called ‘input_data’.
+2. Collect the compositions, TCs and inflows files within the ‘input_data’ folder, adhering to the file names and column definitions outlined below.
+3. Go to the ‘run_model.py’ file, and modify the variable ‘data_folder’ to specify the path to your data. If your layer names are different from ‘product’,’component’, ‘material’ and ‘element’, specify the layers used.
+4. Execute the python file
 
-1. Create a folder for your data with a subfolder named `input_data`.
-2. Place the composition, transfer-coefficient, and inflow files in `input_data`, using the filenames and column definitions described below.
-3. Open `run_model.py` and set `data_folder` to the path of your data folder. If your layer names differ from `product`, `component`, `material`, and `element`, specify the applicable layer names.
-4. Execute the Python file.
+Below is an outline of the input format required for the TCs, compositions and inflows.
 
-The following sections describe the required input formats.
+## Transfer Coefficients
 
-## Transfer coefficients
+**Filename**: ‘TCs.csv’
 
-**Filename:** `TCs.csv`
+**Columns**:
 
-### Columns
+- (Optional) Year: Year to which this TC belongs
+- (Optional) Scenario: Scenario to which this TC belongs
+- (Optional) Location: Location to which this TC belongs
+- (Optional) additionalSpecification: additionalSpecification for this TC
+- Input_FlowID: Stock/Flow ID of the input flow for this TC
+- Input_layer: Layer to which the input resource belongs, e.g. product, component, material
+- Input_layer_key: Input resource
+- Output_FlowID: Stock/Flow ID of the output flow for this TC
+- TC_target_layer: Layer to which the output resource belongs
+- TC_target_key: Output resource
+- value: Value of the TC
 
-- **Year** (optional): Year to which the transfer coefficient belongs.
-- **Scenario** (optional): Scenario to which the transfer coefficient belongs.
-- **Location** (optional): Location to which the transfer coefficient belongs.
-- **additionalSpecification** (optional): Additional specification for the transfer coefficient.
-- **Input_FlowID:** Stock/flow ID of the input flow.
-- **Input_layer:** Layer to which the input resource belongs, such as product, component, or material.
-- **Input_layer_key:** Input resource.
-- **Output_FlowID:** Stock/flow ID of the output flow.
-- **TC_target_layer:** Layer to which the output resource belongs.
-- **TC_target_key:** Output resource.
-- **value:** Value of the transfer coefficient.
+**Example**:
 
-### Example
+![](user-guide-assets/media/image1.png)
 
-![Example transfer-coefficient row](user-guide-assets/media/image1.png)
+Above entry to the TC table indicates that 32% of material M2 that is embedded in component C1 is preserved between flow F2 and F5.
 
-The example indicates that 32% of material M2 embedded in component C1 is preserved between flow F2 and flow F5.
-
-> **Note:** An asterisk can be used to apply the same transfer coefficient to all resources in a layer. For example, `P*` as the input-layer key denotes that the coefficient applies to all input products.
+**NOTE**: The user can also use an asterisk to specify that they want to use the same TC for all products in a layer, for example by using ‘P\*’ as the input layer key to denote that this TC applies to all input products.
 
 ## Compositions
 
-**Filename:** `composition.csv`
+**Filename**: ‘composition.csv’
 
-### Columns
+**Columns**:
 
-- **Year** (optional): Year to which the composition data point belongs.
-- **Scenario** (optional): Scenario to which the composition data point belongs.
-- **Location** (optional): Location to which the composition data point belongs.
-- **additionalSpecification** (optional): Additional specification for the data point.
-- **Stock/ID:** Stock/flow ID of the flow containing the resource.
-- **Layer 1, Layer 2, Layer 3, Layer 4:** Hierarchical resources to which the composition data point applies.
-- **Value:** Composition fraction describing the contribution of the rightmost specified resource to its parent resource.
+- (Optional) Year: Year to which this composition data point belongs
+- (Optional) Scenario: Scenario to which this composition data point belongs
+- (Optional) Location: Location to which this composition data point belongs
+- (Optional) additionalSpecification: additionalSpecification for this data point
+- Stock/ID: Stock/Flow ID for the flow the material is contained in
+- Layer 1, Layer 2, Layer 3, Layer 4: Layer for which this composition data point specifies composition
+- Value: Composition value, denoting what percentage of the rightmost resource composes the resource to the left of it.
 
-### Example
+**Example**:
 
-![Example composition row](user-guide-assets/media/image2.png)
+![](user-guide-assets/media/image2.png)
 
-The example indicates that material M1 composes 52% of component C1 when component C1 is contained in product P1.
+Above entry to the composition table indicates that material M1 composes 52% of component C1, if component C1 is contained within product P1.
 
 ## Inflows
 
-**Filename:** `inputs.csv`
+**Filename**: ‘inputs.csv’
 
-### Columns
+**Columns**:
 
-- **Year** (optional): Year of the inflow.
-- **Scenario** (optional): Scenario associated with the inflow.
-- **Location** (optional): Location associated with the inflow.
-- **additionalSpecification** (optional): Additional specification for the inflow.
-- **Stock/Flow ID:** Stock/flow ID of the inflow.
-- **Substance_main_parent:** Inflow resource. This must be a resource from the highest hierarchical layer.
-- **Value:** Quantity of the resource in the inflow. The model is agnostic to the unit used, but units must be consistent across inflows.
+- (Optional) Year: Year for this inflow
+- (Optional) Scenario: Relevant scenario for this inflow
+- (Optional) Location: Location for this inflow
+- (Optional) additionalSpecification: additionalSpecification for this inflow
+- Stock/Flow ID: Stock/Flow ID for this inflow
+- Substance_main_parent: Inflow substance. Must be a substance of the highest level layer, the parent substance.
+- Value: Amount of this substance contained in the inflow. The model is agnostic to the unit used in this entry, but the same unit must be handled consistently across inflows
 
-> **Note:** The inflow file determines which combinations of years, scenarios, locations, and additional specifications the model analyzes. These columns are optional, and any subset may be provided. When one of these dimensions is specified in the inflow file, the model uses matching entries from the transfer-coefficient and composition files when available. If the dimension is absent from those files, their data are assumed to apply to all values of that dimension.
+**NOTE:** The inflows file is leading for the model to choose which years, scenarios, locations and additionalSpecification will be analyzed. Specifying these is optional, you can specify some or all of these columns. If a specific year/scenario/.. is specified in the inflows file, the model will search for these same years/scenarios/.. in the TCs and composition files and use these if they are present. If these are not present in the TCs or composition files, we assume that the TCs and composition files are the same for all years/scenarios/locations.
