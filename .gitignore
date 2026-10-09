@@ -1,13 +1,16 @@
-.
-~
-.*
-~*
-__*
-*test_size_*
-**/data*/
-**/*data*/
-!data_folder/
+# Python caches and compiled files
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+venv-*/
+
+# Local model datasets; keep the shared basic test fixture
 data_folder/*
 !data_folder/basic_test/
 !data_folder/basic_test/**
-environment.yml
+
+# Generated model outputs (after fixture exceptions so this rule wins)
+**/output_data/

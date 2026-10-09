@@ -11,6 +11,7 @@ from typing import List
 from dataclasses import dataclass
 import networkx as nx
 from itertools import product
+from src.composition_validation import warn_for_unbalanced_compositions
 
 # Definition of file/folder names within the overarching data directory
 OUTPUT_DATA_FOLDER_NAME = "output_data"
@@ -99,6 +100,7 @@ class RecoveryModelOptimized:
             keep_default_na=False,
             na_values=[]
         )
+        warn_for_unbalanced_compositions(composition_df)
         tcs_df = pd.read_csv(
             os.path.join(self.data_folder, INPUT_DATA_FOLDER_NAME, TCS_FILENAME),     
             dtype=InputDataFormat.dtypes,
@@ -129,9 +131,9 @@ class RecoveryModelOptimized:
 
             tcs_df_selection = HelperFunctions.select_df_by_year_scenario_location(df=tcs_df, year=year, scenario=scenario, location=location, additional_specification=additional_specification)
 
-            inflows_df_selection = inflows_df_selection[InputDataFormat.input_columns].replace('n/a','')
-            composition_df_selection = composition_df_selection[InputDataFormat.composition_columns].replace('n/a','')
-            tcs_df_selection = tcs_df_selection[InputDataFormat.TCs_columns].replace('n/a','')
+            inflows_df_selection = inflows_df_selection[InputDataFormat.input_columns].replace('n/a','').drop_duplicates()
+            composition_df_selection = composition_df_selection[InputDataFormat.composition_columns].replace('n/a','').drop_duplicates()
+            tcs_df_selection = tcs_df_selection[InputDataFormat.TCs_columns].replace('n/a','').drop_duplicates()
 
             input_dfs.append({
                 "Year":year,
@@ -269,7 +271,7 @@ class RecoveryModelOptimized:
                 
                 # This snippet of code fills the data gaps when the Input_layer_key is left empty.
                 if int(target_layer[-1])-int(input_layer[-1])==1: # if the layers follow each other, e.g Layer 1->Layer 2
-                    unique_list = process_inflow[input_layer].unique().tolist()
+                    unique_list = [key for key in process_inflow[input_layer].dropna().unique().tolist() if key != '']
                     tcs_layer['Input_layer_key'] = tcs_layer['Input_layer_key'].apply(lambda x: unique_list if x == '' else x)
                     tcs_layer = tcs_layer.explode('Input_layer_key')
                     tcs_layer = tcs_layer.drop_duplicates(subset=['TC_target_key', 'Input_layer_key'])
@@ -277,7 +279,7 @@ class RecoveryModelOptimized:
                 # This snippet is taken from chatgpt, i have no idea but it works
                 if tcs_layer['Input_layer_key'].eq('').any():
                     # Apply the TC to **all rows** of that input layer
-                    keys_to_expand = process_inflow[input_layer].dropna().unique().tolist()
+                    keys_to_expand = [key for key in process_inflow[input_layer].dropna().unique().tolist() if key != '']
                     tcs_layer = tcs_layer.copy()
                     tcs_layer['Input_layer_key'] = tcs_layer['Input_layer_key'].replace('', None)
                     tcs_layer = tcs_layer.explode('Input_layer_key')

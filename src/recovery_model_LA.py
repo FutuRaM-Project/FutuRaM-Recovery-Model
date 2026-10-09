@@ -12,6 +12,7 @@ from scipy.sparse import coo_array, coo_matrix, eye_array, linalg, csr_array
 from typing import Tuple, List
 from dataclasses import dataclass
 from itertools import product
+from src.composition_validation import warn_for_unbalanced_compositions
 
 
 # Definition of file/folder names within the overarching data directory
@@ -99,6 +100,7 @@ class RecoveryModelLA:
             keep_default_na=False,
             na_values=[]
         )
+        warn_for_unbalanced_compositions(composition_df)
         tcs_df = pd.read_csv(
             os.path.join(self.data_folder, INPUT_DATA_FOLDER_NAME, TCS_FILENAME),     
             dtype=InputDataFormat.dtypes,

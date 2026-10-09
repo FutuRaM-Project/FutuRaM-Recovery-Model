@@ -11,7 +11,7 @@ pd.set_option("multi_sparse", False)
 pd.set_option("display.float_format", "{:.2f}".format)
 
 
-data_folder = "data_folder/feb_2026_sensitivity"
+data_folder = "data_folder/july_2026"
 layer_names = ['product','component','material','element']
 recovery_model = RecoveryModelOptimized
 
