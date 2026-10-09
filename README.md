@@ -1,20 +1,17 @@
-# Futuram Recovery Model
+# FutuRaM Recovery Model
 
-## Table of Contents
+This repository contains:
 
-This repository contains:  
-- `doc/` the documentation about recovery model  
-- `src/` the source code of the recovery model  
-- `data_folder/` mock data to test the model  
+- `doc/`: model documentation
+- `src/`: model source code
+- `data_folder/`: mock data for testing the model
 
+## Using the model
 
+Create a folder under `data_folder/` with an `input_data/` subfolder containing three files:
 
-## Using this model
+- `inputs.csv`: inflows per resource
+- `composition.csv`: resource compositions
+- `TCs.csv`: transfer coefficients
 
-To use the model, you can add a new folder to 'data_folder' and add 4 files to the input_data folder in that folder:
-- inflows.csv -- Defines the inflows per resource
-- composition.csv -- Defines the composition of each resource
-- TCs.csv -- Defines the transfer coefficients
-
-Then, specify your data folder in the run_model.py or run_model.ipynb file and execute it. Your data will be saved to an output folder within the folder you created.
-The definitions for how these tables should be formatted can be found in /doc/user_guide.docx. 
+Set `data_folder` in `run_model.py` and execute the file; results are written to the dataset's `output_data/` folder. The optimized implementation is intended for systems without feedback loops, while the linear-algebra implementation can represent feedback loops when the system has a solution. Input formats are defined in the [user guide](doc/User%20guide.md).

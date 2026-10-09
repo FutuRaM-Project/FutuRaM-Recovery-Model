@@ -1,10 +1,4 @@
-scipy
 numpy
 pandas
+scipy
 networkx
-openpyxl
-jupyter
-jupyterlab
-ipywidgets
-gprof2dot
-graphviz

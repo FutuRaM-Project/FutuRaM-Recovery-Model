@@ -62,7 +62,7 @@ class InputDataFormat:
 
 
 class RecoveryModelLA:
-    """Class representing the Linear Algebra based recovery model, as documented in the doc/Recovery_model_documentation.pdf"""
+    """Class representing the linear-algebra-based recovery model."""
     def __init__(self, data_folder: str, layer_names: List[str]):
         """
         Initialize the System class.

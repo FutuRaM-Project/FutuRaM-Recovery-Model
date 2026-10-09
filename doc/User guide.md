@@ -8,7 +8,7 @@
 
 This document contains instructions for how to use the recovery model and documents the input data format used by the model.
 
-The recovery model is designed to compute material flows for a system with multiple layers of resources – e.g. elements are contained in materials, materials are contained in components, components are contained in products. The model computes the flows for each of these different levels. For detailed information on how the recovery model works, consult the code documentation in /doc/Recovery_model_documentation.pdf.
+The recovery model is designed to compute material flows for a system with multiple layers of resources – e.g. elements are contained in materials, materials are contained in components, components are contained in products. The model computes the flows for each of these different levels.
 
 To use the recovery model to compute flows, three different CSV files must be provided: compositions, transfer coefficients and inflows. These must all be served in CSV format within the same folder. Running the model is very simple:
 

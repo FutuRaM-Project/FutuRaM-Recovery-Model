@@ -276,7 +276,7 @@ class RecoveryModelOptimized:
                     tcs_layer = tcs_layer.explode('Input_layer_key')
                     tcs_layer = tcs_layer.drop_duplicates(subset=['TC_target_key', 'Input_layer_key'])
 
-                # This snippet is taken from chatgpt, i have no idea but it works
+                # Expand general transfer coefficients across all non-empty input-layer keys.
                 if tcs_layer['Input_layer_key'].eq('').any():
                     # Apply the TC to **all rows** of that input layer
                     keys_to_expand = [key for key in process_inflow[input_layer].dropna().unique().tolist() if key != '']
